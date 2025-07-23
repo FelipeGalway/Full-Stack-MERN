@@ -85,6 +85,7 @@ full-stack-mern/
 │   ├── .gitignore
 │   ├── package-lock.json                    
 │   └── package.json
+│
 ├── README.md
 ```
 
