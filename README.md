@@ -81,11 +81,11 @@ full-stack-mern/
 │   │   │   └── edit.js
 │   │   ├── App.js
 │   │   └── index.js
-│   ├── public/      
-│   ├── .gitignore
+│   ├── public/       
 │   ├── package-lock.json                    
 │   └── package.json
 │
+├── .gitignore
 ├── README.md
 ```
 
