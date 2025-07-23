@@ -21,5 +21,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignorar arquivos .env em qualquer lugar
 .env
-*/.env  
+*.env
+*/.env
+**/.env
+.env.*
+*.env.*
+*/.env.*
+**/.env.*
+
