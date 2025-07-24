@@ -16,6 +16,11 @@ export default function Create() {
     async function onSubmit(e) {
         e.preventDefault();
 
+        if (!form.name || !form.position || !form.level) {
+            window.alert("Por favor, preencha todos os campos antes de enviar.");
+            return;
+        }
+
         const newPerson = { ...form };
         await fetch("http://localhost:5050/record", {
             method: "POST",

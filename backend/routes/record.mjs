@@ -20,13 +20,16 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    let newDocument = {
-        name: req.body.name,
-        position: req.body.position,
-        level: req.body.level,
-    };
-    let collection = await db.collection("records");
-    let result = await collection.insertOne(newDocument);
+    const { name, position, level } = req.body;
+
+    if (!name || !position || !level) {
+        return res.status(400).send({ error: "Todos os campos (name, position e level) são obrigatórios." });
+    }
+
+    const newDocument = { name, position, level };
+    const collection = await db.collection("records");
+    const result = await collection.insertOne(newDocument);
+
     res.status(201).send(result);
 });
 
