@@ -6,128 +6,116 @@ export default function Edit() {
         name: "",
         position: "",
         level: "",
-        records: [],
     });
+
     const params = useParams();
     const navigate = useNavigate();
+
     useEffect(() => {
         async function fetchData() {
             const id = params.id.toString();
-            const response = await fetch(`http://localhost:5050/record/$
-{params.id.toString()}`);
+            const response = await fetch(`http://localhost:5050/record/${id}`);
+
             if (!response.ok) {
-                const message = `An error has occurred: ${response.statusText}`;
-                window.alert(message);
-                return;
-            }
-            const record = await response.json();
-            if (!record) {
-                window.alert(`Record with id ${id} not found`);
+                alert(`Erro ao buscar o registro: ${response.statusText}`);
                 navigate("/");
                 return;
             }
+
+            const record = await response.json();
+            if (!record) {
+                alert(`Registro com ID ${id} não encontrado.`);
+                navigate("/");
+                return;
+            }
+
             setForm(record);
         }
+
         fetchData();
-        return;
     }, [params.id, navigate]);
-    
+
     function updateForm(value) {
-        return setForm((prev) => {
-            return { ...prev, ...value };
-        });
+        return setForm((prev) => ({ ...prev, ...value }));
     }
+
     async function onSubmit(e) {
         e.preventDefault();
-        const editedPerson = {
+
+        if (!form.name || !form.position || !form.level) {
+            alert("Todos os campos são obrigatórios.");
+            return;
+        }
+
+        const editedRecord = {
             name: form.name,
             position: form.position,
             level: form.level,
         };
-        
+
         await fetch(`http://localhost:5050/record/${params.id}`, {
             method: "PATCH",
-            body: JSON.stringify(editedPerson),
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editedRecord),
         });
+
         navigate("/");
     }
-        return(
-            <div>
-                <h3>Update Record</h3>
+
+    return (
+        <div className="container mt-5">
+            <div className="card shadow p-4">
+                <h4 className="mb-4">Editar Registro</h4>
                 <form onSubmit={onSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="name">Name: </label>
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label">Nome</label>
                         <input
                             type="text"
                             className="form-control"
                             id="name"
                             value={form.name}
                             onChange={(e) => updateForm({ name: e.target.value })}
+                            required
                         />
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="position">Position: </label>
+
+                    <div className="mb-3">
+                        <label htmlFor="position" className="form-label">Cargo</label>
                         <input
                             type="text"
                             className="form-control"
                             id="position"
                             value={form.position}
                             onChange={(e) => updateForm({ position: e.target.value })}
+                            required
                         />
                     </div>
-                    <div className="form-group">
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="positionOptions"
-                                id="positionIntern"
-                                value="Intern"
-                                checked={form.level === "Intern"}
-                                onChange={(e) => updateForm({ level: e.target.value })}
-                            />
-                            <label htmlFor="positionIntern"
-                                className="form-check-label">Intern</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="positionOptions"
-                                id="positionJunior"
-                                value="Junior"
-                                checked={form.level === "Junior"}
-                                onChange={(e) => updateForm({ level: e.target.value })}
-                            />
-                            <label htmlFor="positionJunior"
-                                className="form-check-label">Junior</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="positionOptions"
-                                id="positionSenior"
-                                value="Senior"
-                                checked={form.level === "Senior"}
-                                onChange={(e) => updateForm({ level: e.target.value })}
-                            />
-                            <label htmlFor="positionSenior"
-                                className="form-check-label">Senior</label>
+
+                    <div className="mb-3">
+                        <label className="form-label">Nível</label>
+                        <div className="d-flex gap-3">
+                            {["Intern", "Junior", "Senior"].map((lvl) => (
+                                <div className="form-check" key={lvl}>
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="level"
+                                        id={`edit-level-${lvl}`}
+                                        value={lvl}
+                                        checked={form.level === lvl}
+                                        onChange={(e) => updateForm({ level: e.target.value })}
+                                    />
+                                    <label className="form-check-label" htmlFor={`edit-level-${lvl}`}>
+                                        {lvl}
+                                    </label>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    <br />
-                    <div className="form-group">
-                        <input
-                            type="submit"
-                            value="Update Record"
-                            className="btn btn-primary"
-                        />
-                    </div>
+
+                    <button type="submit" className="btn btn-success mt-3">Salvar alterações</button>
                 </form>
             </div>
-        );
+        </div>
+    );
 }

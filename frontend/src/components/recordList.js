@@ -1,71 +1,95 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Record = (props) => (
+const Record = ({ record, deleteRecord }) => (
     <tr>
-        <td>{props.record.name}</td>
-        <td>{props.record.position}</td>
-        <td>{props.record.level}</td>
+        <td>{record.name}</td>
+        <td>{record.position}</td>
         <td>
-            <Link className="btn btn-link" to={`/edit/${props.record._id}`}>Edit</Link> |
-            <button className="btn btn-link"
-                onClick={() => {
-                    props.deleteRecord(props.record._id);
-                }}
-            >
-                Delete
+            <span className={`badge bg-${getLevelColor(record.level)}`}>
+                {record.level}
+            </span>
+        </td>
+        <td>
+            <Link className="btn btn-sm btn-outline-primary me-2" to={`/edit/${record._id}`}>
+                Editar
+            </Link>
+            <button className="btn btn-sm btn-outline-danger" onClick={() => deleteRecord(record._id)}>
+                Excluir
             </button>
         </td>
     </tr>
 );
+
+function getLevelColor(level) {
+    switch (level) {
+        case "Intern":
+            return "secondary";
+        case "Junior":
+            return "info";
+        case "Senior":
+            return "success";
+        default:
+            return "light";
+    }
+}
+
 export default function RecordList() {
-    const [records, setRecords] = useState([]);    
+    const [records, setRecords] = useState([]);
+
     useEffect(() => {
         async function getRecords() {
             const response = await fetch(`http://localhost:5050/record/`);
             if (!response.ok) {
-                const message = `An error occurred: ${response.statusText}`;
-                window.alert(message);
+                window.alert("Erro ao buscar registros.");
                 return;
             }
-            const records = await response.json();
-            setRecords(records);
+            const data = await response.json();
+            setRecords(data);
         }
+
         getRecords();
-        return;
-    }, [records.length]);  
+    }, []);
+
     async function deleteRecord(id) {
         await fetch(`http://localhost:5050/record/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
         });
-        const newRecords = records.filter((el) => el._id !== id);
-        setRecords(newRecords);
-    }    
-    function recordList() {
-        return records.map((record) => {
-            return (
-                <Record
-                    record={record}
-                    deleteRecord={() => deleteRecord(record._id)}
-                    key={record._id}
-                />
-            );
-        });
-    }    
+        setRecords(records.filter((record) => record._id !== id));
+    }
+
     return (
-        <div>
-            <h3>Record List</h3>
-            <table className="table table-striped" style={{ marginTop: 20 }}>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Level</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>{recordList()}</tbody>
-            </table>
+        <div className="container mt-5">
+            <h3 className="mb-4">Lista de Registros</h3>
+            <div className="card shadow p-3">
+                <table className="table table-hover">
+                    <thead className="table-light">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Cargo</th>
+                            <th>Nível</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {records.length > 0 ? (
+                            records.map((record) => (
+                                <Record
+                                    record={record}
+                                    deleteRecord={deleteRecord}
+                                    key={record._id}
+                                />
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center">
+                                    Nenhum registro encontrado.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

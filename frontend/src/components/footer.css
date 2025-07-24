@@ -1,0 +1,28 @@
+footer {
+  background-color: #f8f9fa; 
+  color: #343a40; 
+  text-align: center;
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 1.2rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1); 
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 2px #0001;
+}

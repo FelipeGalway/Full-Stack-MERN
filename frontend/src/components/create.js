@@ -2,113 +2,96 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Create() {
-    const [form, setForm] = useState({
-        name: "",
-        position: "",
-        level: "",
+  const [form, setForm] = useState({
+    name: "",
+    position: "",
+    level: "",
+  });
+  const navigate = useNavigate();
+
+  function updateForm(value) {
+    return setForm((prev) => ({ ...prev, ...value }));
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    if (!form.name || !form.position || !form.level) {
+      alert("Todos os campos são obrigatórios.");
+      return;
+    }
+
+    const newPerson = { ...form };
+
+    await fetch("http://localhost:5050/record", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPerson),
+    }).catch((error) => {
+      window.alert(error);
+      return;
     });
-    const navigate = useNavigate();
-    function updateForm(value) {
-        return setForm((prev) => {
-            return { ...prev, ...value };
-        });
-    }
-    async function onSubmit(e) {
-        e.preventDefault();
 
-        if (!form.name || !form.position || !form.level) {
-            window.alert("Por favor, preencha todos os campos antes de enviar.");
-            return;
-        }
+    setForm({ name: "", position: "", level: "" });
+    navigate("/");
+  }
 
-        const newPerson = { ...form };
-        await fetch("http://localhost:5050/record", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newPerson),
-        })
-            .catch(error => {
-                window.alert(error);
-                return;
-            });
-        setForm({ name: "", position: "", level: "" });
-        navigate("/");
-    }
-    return (
-        <div>
-            <h3>Create New Record</h3>
-            <form onSubmit={onSubmit}>
-                <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="name"
-                        value={form.name}
-                        onChange={(e) => updateForm({ name: e.target.value })}
-                    />
+  return (
+    <div className="container mt-5">
+      <div className="card shadow p-4">
+        <h4 className="mb-4">Criar novo registro</h4>
+        <form onSubmit={onSubmit}>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Nome</label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              value={form.name}
+              onChange={(e) => updateForm({ name: e.target.value })}
+              placeholder="Ex: João da Silva"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="position" className="form-label">Cargo</label>
+            <input
+              type="text"
+              className="form-control"
+              id="position"
+              value={form.position}
+              onChange={(e) => updateForm({ position: e.target.value })}
+              placeholder="Ex: Desenvolvedor"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Nível</label>
+            <div className="d-flex gap-3">
+              {["Intern", "Junior", "Senior"].map((lvl) => (
+                <div className="form-check" key={lvl}>
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="level"
+                    id={`level-${lvl}`}
+                    value={lvl}
+                    checked={form.level === lvl}
+                    onChange={(e) => updateForm({ level: e.target.value })}
+                  />
+                  <label className="form-check-label" htmlFor={`level-${lvl}`}>
+                    {lvl}
+                  </label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="position">Position</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="position"
-                        value={form.position}
-                        onChange={(e) => updateForm({ position: e.target.value })}
-                    />
-                </div>
-                <div className="form-group">
-                    <div className="form-check form-check-inline">
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="positionOptions"
-                            id="positionIntern"
-                            value="Intern"
-                            checked={form.level === "Intern"}
-                            onChange={(e) => updateForm({ level: e.target.value })}
-                        />
-                        <label htmlFor="positionIntern"
-                            className="form-check-label">Intern</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="positionOptions"
-                            id="positionJunior"
-                            value="Junior"
-                            checked={form.level === "Junior"}
-                            onChange={(e) => updateForm({ level: e.target.value })}
-                        />
-                        <label htmlFor="positionJunior"
-                            className="form-check-label">Junior</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input
-                            className="form-check-input"
-                            type="radio"
-                            name="positionOptions"
-                            id="positionSenior"
-                            value="Senior"
-                            checked={form.level === "Senior"}
-                            onChange={(e) => updateForm({ level: e.target.value })}
-                        />
-                        <label htmlFor="positionSenior"
-                            className="form-check-label">Senior</label>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <input
-                        type="submit"
-                        value="Create person"
-                        className="btn btn-primary"
-                    />
-                </div>
-            </form>
-        </div>
-    );
+              ))}
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-primary mt-3">Salvar</button>
+        </form>
+      </div>
+    </div>
+  );
 }

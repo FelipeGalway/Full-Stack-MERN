@@ -26,7 +26,7 @@ A05D5C6B7623EE37/4B45D0EC-3482-4759-82DA37D8EA07D229/webimage-8A27671A-8A53-45DC
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/create">
-                                Create Record
+                                Criar Registros
                             </NavLink>
                         </li>
                     </ul>
