@@ -16,8 +16,15 @@ export default function Create() {
   async function onSubmit(e) {
     e.preventDefault();
 
+    const allowedLevels = ["Júnior", "Pleno", "Sênior"];
+
     if (!form.name || !form.position || !form.level) {
       alert("Todos os campos são obrigatórios.");
+      return;
+    }
+
+    if (!allowedLevels.includes(form.level)) {
+      alert("Nível inválido. Escolha entre: Júnior, Pleno ou Sênior.");
       return;
     }
 
@@ -70,7 +77,7 @@ export default function Create() {
           <div className="mb-3">
             <label className="form-label">Nível</label>
             <div className="d-flex gap-3">
-              {["Intern", "Junior", "Senior"].map((lvl) => (
+              {["Júnior", "Pleno", "Sênior"].map((lvl) => (
                 <div className="form-check" key={lvl}>
                   <input
                     className="form-check-input"

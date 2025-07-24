@@ -23,11 +23,11 @@ const Record = ({ record, deleteRecord }) => (
 
 function getLevelColor(level) {
     switch (level) {
-        case "Intern":
+        case "Júnior":
             return "secondary";
-        case "Junior":
+        case "Pleno":
             return "info";
-        case "Senior":
+        case "Sênior":
             return "success";
         default:
             return "light";
@@ -39,7 +39,7 @@ export default function RecordList() {
 
     useEffect(() => {
         async function getRecords() {
-            const response = await fetch(`http://localhost:5050/record/`);
+            const response = await fetch(`http://localhost:5050/records/`);
             if (!response.ok) {
                 window.alert("Erro ao buscar registros.");
                 return;
@@ -52,7 +52,7 @@ export default function RecordList() {
     }, []);
 
     async function deleteRecord(id) {
-        await fetch(`http://localhost:5050/record/${id}`, {
+        await fetch(`http://localhost:5050/records/${id}`, {
             method: "DELETE",
         });
         setRecords(records.filter((record) => record._id !== id));
