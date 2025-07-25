@@ -1,6 +1,6 @@
 # 📋 Gerenciador de Registros com MERN Stack
 
-Este projeto é um sistema de gerenciamento de registros desenvolvido com a stack MERN (MongoDB, Express, React, Node.js). Ele permite criar, editar, listar e excluir registros de pessoas com atributos como nome, cargo e nível. Ideal para aprender ou praticar aplicações full stack com persistência de dados em banco NoSQL.
+Este projeto é um sistema de gerenciamento de registros desenvolvido com a stack MERN (MongoDB, Express, React, Node.js). Ele permite **criar, editar, listar e excluir registros de pessoas** com atributos como **nome, cargo e nível**. Ideal para aprender ou praticar aplicações full stack com persistência de dados em banco NoSQL.
 
 ---
 
@@ -8,31 +8,31 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 
 🔹 **1. Back-End com Express + MongoDB**
 
-- Conexão com MongoDB Atlas ou local.
+- Conexão com MongoDB Atlas (ou local).
 
-- Rotas RESTful para criar, ler, atualizar e deletar registros.
+- API RESTful com rotas para **CRUD completo**.
 
-- Uso do MongoDB nativo com ObjectId para consultas por ID.
+- Suporte a atualizações parciais via `PATCH`.
 
-- Middleware express.json() para processar dados via API.
+- Validação de dados recebidos (campos obrigatórios, níveis válidos).
 
 🔹 **2. Front-End com React**
 
 - Interface web moderna com React e React Router.
 
-- Lista registros em tabela com botões de ação (editar/excluir).
+- Componentes para criar, listar e editar registros.
 
-- Formulários para criação e edição de registros com validações básicas.
+- Botões de ação (editar/excluir) diretamente na tabela.
 
-- Navegação por rotas usando react-router-dom.
+- Validações de formulário: todos os campos obrigatórios no cadastro.
 
 🔹 **3. Integração Front-End ↔ Back-End**
 
-- Requisições fetch para as rotas da API.
+- Requisições `fetch` para as rotas da API.
 
 - Operações de CRUD completas conectando interface e banco de dados.
 
-- Separação entre camadas para facilitar manutenção e extensão do projeto.
+- Interface e servidor desacoplados.
 
 ---
 
@@ -60,33 +60,30 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 
 ```bash
 full-stack-mern/
-│
 ├── backend/
-│   └── db/           
-│       └── conn.mjs           # Conexão com MongoDB
-│   └── routes/
-│       └── record.mjs         # Rotas da API (GET, POST, PATCH, DELETE)
-│   ├── .env                   # Variáveis de ambiente 
+│   ├── db/
+│   │   └── conn.mjs              # Conexão com MongoDB
+│   ├── routes/
+│   │   └── record.mjs            # Rotas da API (GET, POST, PATCH, DELETE)
+│   ├── .env                      # Variáveis de ambiente
 │   ├── loadEnvironment.mjs
-│   ├── package-lock.json
-│   ├── package.json
-│   └── server.mjs             # Arquivo principal do servidor Express
-│   
+│   ├── server.mjs                # Inicialização do servidor
+│
 ├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── navbar.js
-│   │   │   ├── recordList.js
-│   │   │   ├── create.js
-│   │   │   └── edit.js
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── public/       
-│   ├── package-lock.json                    
-│   └── package.json
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── header.js         # Cabeçalho com avatar
+│       │   ├── footer.js         # Rodapé fixo com avatar
+│       │   ├── recordList.js     # Lista de registros
+│       │   ├── create.js         # Formulário de criação
+│       │   ├── edit.js           # Formulário de edição
+│       │   └── styles.css        # Estilo global de header/footer
+│       ├── App.js
+│       └── index.js
 │
 ├── .gitignore
-├── README.md
+└── README.md
 ```
 
 ---
@@ -97,18 +94,18 @@ full-stack-mern/
 
 ```bash
 git clone https://github.com/seu-usuario/mern-records-app.git
-cd mern-records-app
+cd mern-registros
 ```
 
 ### ✅ Passo 2: Configurar variáveis de ambiente
 
-- Crie um arquivo .env na pasta backend com o seguinte conteúdo:
+- Crie um arquivo `.env` na pasta `backend/` com o seguinte conteúdo:
 
 ```bash
 ATLAS_URI=mongodb://localhost:27017/meubanco  # ou URL do MongoDB Atlas
-DB_NAME=meubanco
 PORT=5050
 ```
+⚠️ Use sua URL do MongoDB Atlas se for utilizar o banco em nuvem.
 
 ### ✅ Passo 3: Instalar dependências
 
@@ -146,15 +143,17 @@ npm start
 
 ## 🧪 Funcionalidades da Interface Web
 
-- ✅ Visualizar lista de registros em uma tabela.
+- 📋 Visualizar lista de registros em tabela
 
-- ✏️ Editar qualquer registro existente.
+- ➕ Criar novos registros (com validação)
 
-- ➕ Criar novos registros.
+- ✏️ Editar registros (atualização parcial ou total)
 
-- ❌ Excluir registros diretamente da tabela.
+- ❌ Excluir registros
 
-- Navegação sem recarregar a página.
+- 🔄 Navegação sem recarregar a página (SPA)
+
+- ✅ Validação de campos obrigatórios e níveis válidos
 
 ---
 
@@ -162,18 +161,22 @@ npm start
 
 | Método | Rota          | Descrição                   |
 |--------|---------------|-----------------------------|
-| GET    | `/record`     | Lista todos os registros    |
-| GET    | `/record/:id` | Retorna um registro por ID  |
-| POST   | `/record`     | Cria um novo registro       |
-| PATCH  | `/record/:id` | Atualiza um registro por ID |
-| DELETE | `/record/:id` | Remove um registro por ID   |
+| GET    | `/records`     | Lista todos os registros    |
+| GET    | `/records/:id` | Retorna um registro por ID  |
+| POST   | `/records`     | Cria um novo registro       |
+| PATCH  | `/records/:id` | Atualiza um registro por ID |
+| DELETE | `/records/:id` | Remove um registro por ID   |
 
 ---
 
 ## 🛠️ Observações
 
-- O projeto espera uma instância MongoDB em execução (local ou Atlas).
+- O campo nível deve ser um dos seguintes: Júnior, Pleno, Sênior.
 
-- O front-end React consome a API em http://localhost:5050/record.
+- O front-end está 100% em português (inclusive os campos).
 
-- Você pode customizar os campos facilmente adicionando mais propriedades nos componentes e na API.
+- Os nomes dos campos na API foram adaptados: nome, cargo, nivel.
+
+- O projeto possui cabeçalho e rodapé fixos com avatar.
+
+- A navegação é feita com React Router e todas as páginas são SPA.
