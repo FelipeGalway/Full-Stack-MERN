@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router";
 
 export default function Edit() {
     const [form, setForm] = useState({
-        name: "",
-        position: "",
-        level: "",
+        nome: "",
+        cargo: "",
+        nivel: "",
     });
 
     const params = useParams();
@@ -14,7 +14,7 @@ export default function Edit() {
     useEffect(() => {
         async function fetchData() {
             const id = params.id.toString();
-            const response = await fetch(`http://localhost:5050/record/${id}`);
+            const response = await fetch(`http://localhost:5050/records/${id}`);
 
             if (!response.ok) {
                 alert(`Erro ao buscar o registro: ${response.statusText}`);
@@ -44,23 +44,23 @@ export default function Edit() {
 
         const allowedLevels = ["Júnior", "Pleno", "Sênior"];
 
-        if (!form.name || !form.position || !form.level) {
+        if (!form.nome || !form.cargo || !form.nivel) {
             alert("Todos os campos são obrigatórios.");
             return;
         }
 
-        if (!allowedLevels.includes(form.level)) {
+        if (!allowedLevels.includes(form.nivel)) {
             alert("Nível inválido. Escolha entre: Júnior, Pleno ou Sênior.");
             return;
         }
 
         const editedRecord = {
-            name: form.name,
-            position: form.position,
-            level: form.level,
+            nome: form.nome,
+            cargo: form.cargo,
+            nivel: form.nivel,
         };
 
-        await fetch(`http://localhost:5050/record/${params.id}`, {
+        await fetch(`http://localhost:5050/records/${params.id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(editedRecord),
@@ -75,25 +75,25 @@ export default function Edit() {
                 <h4 className="mb-4">Editar Registro</h4>
                 <form onSubmit={onSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="name" className="form-label">Nome</label>
+                        <label htmlFor="nome" className="form-label">Nome</label>
                         <input
                             type="text"
                             className="form-control"
-                            id="name"
-                            value={form.name}
-                            onChange={(e) => updateForm({ name: e.target.value })}
+                            id="nome"
+                            value={form.nome}
+                            onChange={(e) => updateForm({ nome: e.target.value })}
                             required
                         />
                     </div>
 
                     <div className="mb-3">
-                        <label htmlFor="position" className="form-label">Cargo</label>
+                        <label htmlFor="cargo" className="form-label">Cargo</label>
                         <input
                             type="text"
                             className="form-control"
-                            id="position"
-                            value={form.position}
-                            onChange={(e) => updateForm({ position: e.target.value })}
+                            id="cargo"
+                            value={form.cargo}
+                            onChange={(e) => updateForm({ cargo: e.target.value })}
                             required
                         />
                     </div>
@@ -106,13 +106,13 @@ export default function Edit() {
                                     <input
                                         className="form-check-input"
                                         type="radio"
-                                        name="level"
-                                        id={`edit-level-${lvl}`}
+                                        name="nivel"
+                                        id={`edit-nivel-${lvl}`}
                                         value={lvl}
-                                        checked={form.level === lvl}
-                                        onChange={(e) => updateForm({ level: e.target.value })}
+                                        checked={form.nivel === lvl}
+                                        onChange={(e) => updateForm({ nivel: e.target.value })}
                                     />
-                                    <label className="form-check-label" htmlFor={`edit-level-${lvl}`}>
+                                    <label className="form-check-label" htmlFor={`edit-nivel-${lvl}`}>
                                         {lvl}
                                     </label>
                                 </div>

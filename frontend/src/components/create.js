@@ -3,9 +3,9 @@ import { useNavigate } from "react-router";
 
 export default function Create() {
   const [form, setForm] = useState({
-    name: "",
-    position: "",
-    level: "",
+    nome: "",
+    cargo: "",
+    nivel: "",
   });
   const navigate = useNavigate();
 
@@ -18,19 +18,19 @@ export default function Create() {
 
     const allowedLevels = ["Júnior", "Pleno", "Sênior"];
 
-    if (!form.name || !form.position || !form.level) {
+    if (!form.nome || !form.cargo || !form.nivel) {
       alert("Todos os campos são obrigatórios.");
       return;
     }
 
-    if (!allowedLevels.includes(form.level)) {
+    if (!allowedLevels.includes(form.nivel)) {
       alert("Nível inválido. Escolha entre: Júnior, Pleno ou Sênior.");
       return;
     }
 
     const newPerson = { ...form };
 
-    await fetch("http://localhost:5050/record", {
+    await fetch("http://localhost:5050/records", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newPerson),
@@ -39,7 +39,7 @@ export default function Create() {
       return;
     });
 
-    setForm({ name: "", position: "", level: "" });
+    setForm({ nome: "", cargo: "", nivel: "" });
     navigate("/");
   }
 
@@ -49,26 +49,26 @@ export default function Create() {
         <h4 className="mb-4">Criar novo registro</h4>
         <form onSubmit={onSubmit}>
           <div className="mb-3">
-            <label htmlFor="name" className="form-label">Nome</label>
+            <label htmlFor="nome" className="form-label">Nome</label>
             <input
               type="text"
               className="form-control"
-              id="name"
-              value={form.name}
-              onChange={(e) => updateForm({ name: e.target.value })}
+              id="nome"
+              value={form.nome}
+              onChange={(e) => updateForm({ nome: e.target.value })}
               placeholder="Ex: João da Silva"
               required
             />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="position" className="form-label">Cargo</label>
+            <label htmlFor="cargo" className="form-label">Cargo</label>
             <input
               type="text"
               className="form-control"
-              id="position"
-              value={form.position}
-              onChange={(e) => updateForm({ position: e.target.value })}
+              id="cargo"
+              value={form.cargo}
+              onChange={(e) => updateForm({ cargo: e.target.value })}
               placeholder="Ex: Desenvolvedor"
               required
             />
@@ -82,13 +82,13 @@ export default function Create() {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="level"
-                    id={`level-${lvl}`}
+                    nome="nivel"
+                    id={`nivel-${lvl}`}
                     value={lvl}
-                    checked={form.level === lvl}
-                    onChange={(e) => updateForm({ level: e.target.value })}
+                    checked={form.nivel === lvl}
+                    onChange={(e) => updateForm({ nivel: e.target.value })}
                   />
-                  <label className="form-check-label" htmlFor={`level-${lvl}`}>
+                  <label className="form-check-label" htmlFor={`nivel-${lvl}`}>
                     {lvl}
                   </label>
                 </div>

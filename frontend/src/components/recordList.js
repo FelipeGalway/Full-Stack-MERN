@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 const Record = ({ record, deleteRecord }) => (
     <tr>
-        <td>{record.name}</td>
-        <td>{record.position}</td>
+        <td>{record.nome}</td>
+        <td>{record.cargo}</td>
         <td>
-            <span className={`badge bg-${getLevelColor(record.level)}`}>
-                {record.level}
+            <span className={`badge bg-${getLevelColor(record.nivel)}`}>
+                {record.nivel}
             </span>
         </td>
         <td>
@@ -21,8 +21,8 @@ const Record = ({ record, deleteRecord }) => (
     </tr>
 );
 
-function getLevelColor(level) {
-    switch (level) {
+function getLevelColor(nivel) {
+    switch (nivel) {
         case "Júnior":
             return "secondary";
         case "Pleno":
@@ -60,7 +60,14 @@ export default function RecordList() {
 
     return (
         <div className="container mt-5">
-            <h3 className="mb-4">Lista de Registros</h3>
+            
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h3>Lista de Registros</h3>
+                <Link to="/create" className="btn btn-success">
+                    + Novo Registro
+                </Link>
+            </div>
+
             <div className="card shadow p-3">
                 <table className="table table-hover">
                     <thead className="table-light">

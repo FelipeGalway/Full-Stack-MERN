@@ -24,17 +24,17 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, position, level } = req.body;
+  const { nome, cargo, nivel } = req.body;
 
-  if (!name || !position || !level) {
-    return res.status(400).send({ error: "Todos os campos (name, position e level) são obrigatórios." });
+  if (!nome || !cargo || !nivel) {
+    return res.status(400).send({ error: "Todos os campos (nome, cargo e nivel) são obrigatórios." });
   }
 
-  if (!allowedLevels.includes(level)) {
+  if (!allowedLevels.includes(nivel)) {
     return res.status(400).send({ error: `O nível deve ser um dos seguintes: ${allowedLevels.join(", ")}` });
   }
 
-  const newDocument = { name, position, level };
+  const newDocument = { nome, cargo, nivel };
   const collection = await db.collection("records");
   const result = await collection.insertOne(newDocument);
 
@@ -42,20 +42,23 @@ router.post("/", async (req, res) => {
 });
 
 router.patch("/:id", async (req, res) => {
-  const { name, position, level } = req.body;
+  const { nome, cargo, nivel } = req.body;
 
-  if (!name || !position || !level) {
-    return res.status(400).send({ error: "Todos os campos são obrigatórios." });
+  if (!nome && !cargo && !nivel) {
+    return res.status(400).send({ error: "Informe ao menos um campo para atualizar." });
   }
 
-  if (!allowedLevels.includes(level)) {
+  const allowedLevels = ["Júnior", "Pleno", "Sênior"];
+  if (nivel && !allowedLevels.includes(nivel)) {
     return res.status(400).send({ error: `O nível deve ser um dos seguintes: ${allowedLevels.join(", ")}` });
   }
 
   const query = { _id: new ObjectId(req.params.id) };
-  const updates = {
-    $set: { name, position, level }
-  };
+  const updates = { $set: {} };
+
+  if (nome !== undefined) updates.$set.nome = nome;
+  if (cargo !== undefined) updates.$set.cargo = cargo;
+  if (nivel !== undefined) updates.$set.nivel = nivel;
 
   const collection = await db.collection("records");
   const result = await collection.updateOne(query, updates);
