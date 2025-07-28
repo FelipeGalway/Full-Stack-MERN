@@ -1,10 +1,9 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
+import { recordSchema, partialSchema } from "../validation/recordSchema.mjs";
 
 const router = express.Router();
-
-const allowedLevels = ["Júnior", "Pleno", "Sênior"];
 
 router.get("/", async (req, res) => {
   const collection = await db.collection("records");
@@ -24,41 +23,21 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { nome, cargo, nivel } = req.body;
+  const { error } = recordSchema.validate(req.body);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
-  if (!nome || !cargo || !nivel) {
-    return res.status(400).send({ error: "Todos os campos (nome, cargo e nivel) são obrigatórios." });
-  }
-
-  if (!allowedLevels.includes(nivel)) {
-    return res.status(400).send({ error: `O nível deve ser um dos seguintes: ${allowedLevels.join(", ")}` });
-  }
-
-  const newDocument = { nome, cargo, nivel };
   const collection = await db.collection("records");
-  const result = await collection.insertOne(newDocument);
+  const result = await collection.insertOne(req.body);
 
   res.status(201).send(result);
 });
 
 router.patch("/:id", async (req, res) => {
-  const { nome, cargo, nivel } = req.body;
-
-  if (!nome && !cargo && !nivel) {
-    return res.status(400).send({ error: "Informe ao menos um campo para atualizar." });
-  }
-
-  const allowedLevels = ["Júnior", "Pleno", "Sênior"];
-  if (nivel && !allowedLevels.includes(nivel)) {
-    return res.status(400).send({ error: `O nível deve ser um dos seguintes: ${allowedLevels.join(", ")}` });
-  }
+  const { error } = partialSchema.validate(req.body);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
   const query = { _id: new ObjectId(req.params.id) };
-  const updates = { $set: {} };
-
-  if (nome !== undefined) updates.$set.nome = nome;
-  if (cargo !== undefined) updates.$set.cargo = cargo;
-  if (nivel !== undefined) updates.$set.nivel = nivel;
+  const updates = { $set: req.body };
 
   const collection = await db.collection("records");
   const result = await collection.updateOne(query, updates);
