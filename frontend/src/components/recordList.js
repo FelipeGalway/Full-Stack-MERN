@@ -61,6 +61,8 @@ export default function RecordList() {
     return (
         <div className="container mt-5">
             
+            <div class="banner"></div>
+            
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h3>Lista de Registros</h3>
                 <Link to="/create" className="btn btn-success">

@@ -1,12 +1,12 @@
 # 📋 Gerenciador de Registros com MERN Stack
 
-Este projeto é um sistema de gerenciamento de registros desenvolvido com a stack MERN (MongoDB, Express, React, Node.js). Ele permite **criar, editar, listar e excluir registros de pessoas** com atributos como **nome, cargo e nível**. Ideal para aprender ou praticar aplicações full stack com persistência de dados em banco NoSQL.
+Este projeto é um sistema de gerenciamento de registros desenvolvido com a stack MERN (MongoDB, Express, React, Node.js). Ele permite **criar, editar, listar e excluir registros de pessoas** com atributos como **nome, cargo e nível**. Consta com **validações robustas** usando **Joi** no back-end e **Zod** no front-end, oferecendo uma experiência mais segura e consistente. Ideal para aprender ou praticar aplicações full stack com persistência de dados em banco NoSQL.
 
 ---
 
 ## 🚀 Funcionalidades
 
-🔹 **1. Back-End com Express + MongoDB**
+🔹 **1. Back-End com Express + MongoDB + Joi**
 
 - Conexão com MongoDB Atlas (ou local).
 
@@ -14,9 +14,9 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 
 - Suporte a atualizações parciais via `PATCH`.
 
-- Validação de dados recebidos (campos obrigatórios, níveis válidos).
+- Validação de dados com Joi: garante campos obrigatórios, tipos corretos e níveis permitidos.
 
-🔹 **2. Front-End com React**
+🔹 **2. Front-End com React + Zod**
 
 - Interface web moderna com React e React Router.
 
@@ -24,7 +24,7 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 
 - Botões de ação (editar/excluir) diretamente na tabela.
 
-- Validações de formulário: todos os campos obrigatórios no cadastro.
+- Validação de formulários com Zod: feedback imediato para o usuário.
 
 🔹 **3. Integração Front-End ↔ Back-End**
 
@@ -38,21 +38,12 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 
 ## 🧰 Tecnologias Utilizadas
 
-🟢 **Node.js** – ambiente de execução JavaScript
+| Categoria     | Tecnologias                         |
+| ------------- | ----------------------------------- |
+| **Back-End**  | Node.js, Express.js, MongoDB, Joi   |
+| **Front-End** | React, React Router, Zod, Bootstrap |
+| **Geral**     | dotenv, fetch API, CSS Modules      |
 
-⚙️ **Express.js** – servidor backend e API
-
-🍃 **MongoDB** – banco de dados NoSQL
-
-🌐 **React** – biblioteca front-end para SPA
-
-🧭 **React Router** – roteamento de páginas
-
-🎨 **Bootstrap** – estilos visuais e componentes prontos
-
-📦 **dotenv** – gerenciamento de variáveis de ambiente
-
-🛠️ **fetch API** – comunicação front ↔ back
 
 ---
 
@@ -62,25 +53,34 @@ Este projeto é um sistema de gerenciamento de registros desenvolvido com a stac
 full-stack-mern/
 ├── backend/
 │   ├── db/
-│   │   └── conn.mjs              # Conexão com MongoDB
+│   │   └── conn.mjs               # Conexão com MongoDB
+│   │
 │   ├── routes/
-│   │   └── record.mjs            # Rotas da API (GET, POST, PATCH, DELETE)
-│   ├── .env                      # Variáveis de ambiente
-│   ├── loadEnvironment.mjs
-│   ├── server.mjs                # Inicialização do servidor
+│   │   └── record.mjs             # Rotas da API (GET, POST, PATCH, DELETE)
+│   │
+│   ├── validation/
+│   │   └── recordSchema.mjs       # Esquemas Joi para validação de registros
+│   │
+│   ├── .env                       # Variáveis de ambiente
+│   ├── loadEnvironment.mjs        # Carregamento de variáveis com dotenv
+│   └── server.mjs                 # Inicialização do servidor Express
 │
 ├── frontend/
-│   ├── public/
+│   ├── public/                    # Arquivos públicos
 │   └── src/
 │       ├── components/
-│       │   ├── header.js         # Cabeçalho com avatar
-│       │   ├── footer.js         # Rodapé fixo com avatar
-│       │   ├── recordList.js     # Lista de registros
-│       │   ├── create.js         # Formulário de criação
-│       │   ├── edit.js           # Formulário de edição
-│       │   └── styles.css        # Estilo global de header/footer
-│       ├── App.js
-│       └── index.js
+│       │   ├── header.js          # Cabeçalho fixo com avatar
+│       │   ├── footer.js          # Rodapé fixo com avatar
+│       │   ├── recordList.js      # Lista de registros em tabela
+│       │   ├── create.js          # Formulário de criação com validação Zod
+│       │   ├── edit.js            # Formulário de edição com validação Zod
+│       │   └── styles.css         # Estilo global de header/footer
+│       │
+│       ├── validators/
+│       │   └── recordValidator.js # Validação de formulário com Zod
+│       │
+│       ├── App.js                 # Componente principal com rotas
+│       └── index.js               # Ponto de entrada da aplicação React
 │
 ├── .gitignore
 └── README.md
@@ -145,7 +145,7 @@ npm start
 
 - 📋 Visualizar lista de registros em tabela
 
-- ➕ Criar novos registros (com validação)
+- ➕ Criar novos registros com validação via Zod
 
 - ✏️ Editar registros (atualização parcial ou total)
 
@@ -153,11 +153,33 @@ npm start
 
 - 🔄 Navegação sem recarregar a página (SPA)
 
-- ✅ Validação de campos obrigatórios e níveis válidos
+- ✅ Feedback instantâneo de erros no formulário
 
 ---
 
-## ✅ Rotas da API
+## 🔐 Validações de Dados
+
+### ✅ Back-End (Joi)
+
+- Validações no corpo das requisições:
+
+    - Campos obrigatórios: nome, cargo, nivel
+
+    - Tipos corretos e tamanhos mínimos
+
+    - O campo nivel aceita apenas: Júnior, Pleno, Sênior
+
+### ✅ Front-End (Zod)
+
+- Validação de formulário antes de enviar ao servidor:
+
+    - Campos obrigatórios e mensagens personalizadas
+
+    - Integração com o estado do React para exibição de erros
+
+---
+
+## 📡 Rotas da API
 
 | Método | Rota          | Descrição                   |
 |--------|---------------|-----------------------------|
@@ -169,14 +191,12 @@ npm start
 
 ---
 
-## 🛠️ Observações
+## 📝 Observações Finais
 
-- O campo nível deve ser um dos seguintes: Júnior, Pleno, Sênior.
+- O front-end está completamente em português.
 
-- O front-end está 100% em português (inclusive os campos).
+- O projeto inclui cabeçalho e rodapé com avatar.
 
-- Os nomes dos campos na API foram adaptados: nome, cargo, nivel.
+- Ideal para aprender CRUD completo com stack moderna.
 
-- O projeto possui cabeçalho e rodapé fixos com avatar.
-
-- A navegação é feita com React Router e todas as páginas são SPA.
+- Código limpo, modular e de fácil manutenção.

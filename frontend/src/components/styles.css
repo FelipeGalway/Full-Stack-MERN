@@ -41,3 +41,7 @@ footer {
   object-fit: cover;
   box-shadow: 0 0 2px #0001;
 }
+
+.banner {
+    height: 15px;
+}

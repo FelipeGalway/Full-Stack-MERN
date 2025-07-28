@@ -120,7 +120,16 @@ export default function Edit() {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-success mt-3">Salvar alterações</button>
+                    <div className="mt-3">
+                        <button type="submit" className="btn btn-success">Salvar alterações</button>
+                        <button
+                            type="button"
+                            className="btn btn-secondary ms-2"
+                            onClick={() => navigate("/")}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

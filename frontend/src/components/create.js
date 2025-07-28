@@ -96,7 +96,16 @@ export default function Create() {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary mt-3">Salvar</button>
+          <div className="mt-3">
+            <button type="submit" className="btn btn-primary">Salvar</button>
+            <button
+              type="button"
+              className="btn btn-secondary ms-2"
+              onClick={() => navigate("/")}
+            >
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
     </div>
