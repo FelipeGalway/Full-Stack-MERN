@@ -57,28 +57,35 @@ export default function Edit() {
 
     const result = recordSchema.safeParse(form);
     if (!result.success) {
-      if (result.error?.errors && result.error.errors.length > 0) {
+      if (result.error?.errors?.length > 0) {
         const fieldErrors = {};
         for (const err of result.error.errors) {
-          if (err.path && err.path.length > 0) {
+          if (err.path?.length > 0) {
             fieldErrors[err.path[0]] = err.message;
           }
         }
         setErrors(fieldErrors);
       } else {
-        setGeneralError(
-          "Por favor, corrija os campos destacados antes de salvar."
-        );
+        setGeneralError("Por favor, corrija os campos destacados antes de salvar.");
       }
       return;
     }
 
     try {
-      await fetch(`http://localhost:5050/records/${params.id}`, {
+      // Envie apenas os campos válidos
+      const { nome, cargo, nivel } = form;
+
+      const response = await fetch(`http://localhost:5050/records/${params.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ nome, cargo, nivel }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao salvar.");
+      }
+
       navigate("/");
     } catch (error) {
       setGeneralError("Erro ao salvar alterações. Tente novamente mais tarde.");
